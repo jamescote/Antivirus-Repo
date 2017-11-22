@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VirusDB", "VirusDB\VirusDB.vcxproj", "{470C18D7-91BE-479A-AE76-42220091B346}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{470C18D7-91BE-479A-AE76-42220091B346}.Debug|ARM.ActiveCfg = Debug|ARM
+		{470C18D7-91BE-479A-AE76-42220091B346}.Debug|ARM.Build.0 = Debug|ARM
+		{470C18D7-91BE-479A-AE76-42220091B346}.Debug|x64.ActiveCfg = Debug|x64
+		{470C18D7-91BE-479A-AE76-42220091B346}.Debug|x64.Build.0 = Debug|x64
+		{470C18D7-91BE-479A-AE76-42220091B346}.Debug|x86.ActiveCfg = Debug|x86
+		{470C18D7-91BE-479A-AE76-42220091B346}.Debug|x86.Build.0 = Debug|x86
+		{470C18D7-91BE-479A-AE76-42220091B346}.Release|ARM.ActiveCfg = Release|ARM
+		{470C18D7-91BE-479A-AE76-42220091B346}.Release|ARM.Build.0 = Release|ARM
+		{470C18D7-91BE-479A-AE76-42220091B346}.Release|x64.ActiveCfg = Release|x64
+		{470C18D7-91BE-479A-AE76-42220091B346}.Release|x64.Build.0 = Release|x64
+		{470C18D7-91BE-479A-AE76-42220091B346}.Release|x86.ActiveCfg = Release|x86
+		{470C18D7-91BE-479A-AE76-42220091B346}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1670BBCE-5367-4840-8A18-F52D0CBC5449}
+	EndGlobalSection
+EndGlobal
