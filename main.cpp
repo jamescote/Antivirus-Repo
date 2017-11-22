@@ -1,7 +1,10 @@
 #include <cstdio>
+#include "VirusDB.h"
 
 int main()
 {
-    printf("hello from VirusDB!\n");
+	VirusDB *pVDB = new VirusDB();
+
+	delete pVDB;
     return 0;
 }

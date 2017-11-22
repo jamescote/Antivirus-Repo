@@ -1,0 +1,11 @@
+# EICAR test file
+v EICAR-test
+s 414e54495649525553
+o 43
+. .
+
+#Other Entry
+v Virulent-Virus
+s 41224552e24562
+o 512
+. .
