@@ -14,7 +14,7 @@
 
 // Constants
 const char FILE_NAME[] = { "virus.db" };
-const char VALID_CHARS[] = { "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" };
+const char VALID_CHARS[] = { "-_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" };
 
 // Constructor
 VirusDB::VirusDB()
