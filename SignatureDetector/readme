@@ -1,0 +1,4 @@
+t1.txt and t2.txt are example files for the substring matcher
+
+they have a substring >128 bytes (not sure the exact length) that is found
+by the substring matcher.
