@@ -26,11 +26,11 @@ class Hancock:
         
         try:
             with open(sys.argv[1], 'rb') as f1, open(sys.argv[2], 'rb') as f2:
-                f1_text = f1.read().encode('hex')
-                f2_text = f2.read().encode('hex')
+                f1_data = bytearray.fromhex(f1.read().encode('hex'))
+                f2_data = bytearray.fromhex(f2.read().encode('hex'))
                 
-                matcher = SequenceMatcher(None, f1_text, f2_text, autojunk=False)
-                match = matcher.find_longest_match(0, len(f1_text), 0, len(f2_text))
+                matcher = SequenceMatcher(None, f1_data, f2_data, autojunk=False)
+                match = matcher.find_longest_match(0, len(f1_data), 0, len(f2_data))
                 offset = -1
 
                 #if match is of acceptable size
@@ -39,12 +39,12 @@ class Hancock:
                     if match.a == match.b:
                         offset = match.a
 
-                    substr = f1_text[match.a:match.a + match.size]
+                    substr = f1_data[match.a:match.a + match.size]
 
                     #cut off leading zeroes by finding first index where i,i+1 is not 00
                     i = 0
-                    while substr[i] + substr[i+1] == '00':
-                        i+=2
+                    while substr[i] == '00':
+                        i+=1
 
                     substr = substr[i:]
 
@@ -52,10 +52,10 @@ class Hancock:
                     if len(substr) > max_size:
                         substr = substr[0:max_size]
                         
-                    signature = (offset, substr)
+                    signature = (offset, ''.join(format(x, '02x') for x in substr))
                         
         except:
-            dprint(traceback.print_exc(5))
+            self.dprint(traceback.print_exc(5))
 
         return signature
 
