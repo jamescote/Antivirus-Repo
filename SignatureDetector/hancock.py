@@ -31,10 +31,7 @@ class Hancock:
                 
                 matcher = SequenceMatcher(None, f1_text, f2_text, autojunk=False)
                 match = matcher.find_longest_match(0, len(f1_text), 0, len(f2_text))
-
                 offset = -1
-
-                print(f1_text[match.a:match.a + match.size])
 
                 #if match is of acceptable size
                 if match.size >= min_size:
