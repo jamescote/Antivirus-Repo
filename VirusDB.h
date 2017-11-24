@@ -3,6 +3,13 @@
 // Includes
 #include "includes.h"
 
+// virus Entry Structure Definition
+struct VirusEntryStruct
+{
+	string m_sSignature;
+	UINT m_iOffset;
+};
+
 // Class: VirusDB
 // Desc: Contains a database of Virus definitions
 // Written by: James Coté
@@ -13,6 +20,7 @@ public:
 	~VirusDB();
 
 	void getSignatures( vector< string >& pSigs );
+	const unordered_map< string, VirusEntryStruct >* getDBPtr() { return &m_Entries; }
 	void getMinMaxOffsets( UINT& iMin, UINT& iMax );
 
 private:
@@ -23,12 +31,6 @@ private:
 	VirusDB( const VirusDB& pCopy ) {}
 
 	void loadDB();
-
-	struct VirusEntryStruct
-	{
-		string m_sSignature;
-		UINT m_iOffset;
-	};
 
 	unordered_map< string, VirusEntryStruct > m_Entries;
 };
