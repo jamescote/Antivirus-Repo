@@ -1,8 +1,5 @@
 // Includes
 #include "VirusDB.h"
-#include <iostream>
-#include <sstream>
-#include <fstream>
 
 // Defines
 #define INPUT_SIZE 256
@@ -15,6 +12,16 @@
 // Constants
 const char FILE_NAME[] = { "virus.db" };
 const char VALID_CHARS[] = { "-_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" };
+
+// Singleton Implementation
+VirusDB* VirusDB::m_pInstance = NULL;
+
+VirusDB* VirusDB::getInstance()
+{
+	if ( NULL == m_pInstance )
+		m_pInstance = new VirusDB();
+	return m_pInstance;
+}
 
 // Constructor
 VirusDB::VirusDB()
@@ -35,8 +42,10 @@ void VirusDB::loadDB()
 	string sBuffer;
 	string::iterator pBeginIter, pEndIter;
 	string sName;
+	string sRawSig;
 	VirusEntryStruct stEntry;
-	istringstream ssStream;
+	istringstream isStream;
+	stringstream sStream;
 	size_t offsetBegin, offsetEnd;
 
 	// Ensure file is open.
@@ -68,12 +77,22 @@ void VirusDB::loadDB()
 						sName.assign( pBeginIter + 2, pEndIter );
 						break;
 					case SIGNATURE:		// Assign Signature
-						stEntry.m_sSignature.assign( pBeginIter + 2, pEndIter );
+						sRawSig.assign( pBeginIter + 2, pEndIter );
+						if ( sRawSig.size() & 1 )
+							sRawSig.push_back( '0' );
+						UINT cByte;
+						for ( UINT off = 0; off < sRawSig.length(); off += 2 )
+						{
+							sStream.clear();
+							sStream << hex << sRawSig.substr( off, 2 );
+							sStream >> cByte;
+							stEntry.m_sSignature.push_back( static_cast<UBYTE>(cByte) );
+						}
 						break;
 					case OFFSET:		// Assign Offset into the file.
-						ssStream.str( sBuffer );
-						ssStream.seekg( offsetBegin );
-						ssStream >> stEntry.m_iOffset;
+						isStream.str( sBuffer );
+						isStream.seekg( offsetBegin );
+						isStream >> stEntry.m_iOffset;
 						break;
 					case END:			// Found an end, consolidate entry and store
 						if ( !sName.empty() && !stEntry.m_sSignature.empty() )
@@ -94,6 +113,7 @@ void VirusDB::loadDB()
 		pDBFile.close();
 
 		// Debugging
+	#ifdef DEBUG
 		for ( unordered_map<string, VirusEntryStruct>::iterator iter = m_Entries.begin();
 			 iter != m_Entries.end();
 			 ++iter )
@@ -102,7 +122,36 @@ void VirusDB::loadDB()
 			cout << "\tSignature:\t" << (*iter).second.m_sSignature << endl;
 			cout << "\tOffset:\t\t" << (*iter).second.m_iOffset << endl;
 		}
+	#endif
 	}
 	else	// Unable to open the file.
 		cout << "Error: unable to open " << FILE_NAME << endl;
+}
+
+// Gets a vector of signature strings.
+void VirusDB::getSignatures( vector< string >& pSigs )
+{
+	for ( unordered_map<string, VirusEntryStruct>::iterator iter = m_Entries.begin();
+		 iter != m_Entries.end();
+		 ++iter )
+		pSigs.push_back( iter->second.m_sSignature );
+}
+
+// Returns the range of the Offsets in the Virus Database
+void VirusDB::getMinMaxOffsets( UINT& iMin, UINT& iMax )
+{
+	// Initialize to Max and Min possible
+	iMin = numeric_limits<UINT>::max();
+	iMax = 0;
+
+	// Go through and evaluate min and max
+	for ( unordered_map<string, VirusEntryStruct>::iterator iter = m_Entries.begin();
+		  iter != m_Entries.end();
+		  ++iter )
+	{
+		if ( iter->second.m_iOffset < iMin )
+			iMin = iter->second.m_iOffset;
+		if ( (numeric_limits<UINT>::max() != iter->second.m_iOffset) && (iter->second.m_iOffset > iMax) )	// Ignore offsets set to MAX INT.
+			iMax = iter->second.m_iOffset;
+	}
 }

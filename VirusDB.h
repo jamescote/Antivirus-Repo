@@ -1,11 +1,7 @@
 #pragma once
 
 // Includes
-#include <unordered_map>
-#include <string>
-
-// namespaces
-using namespace std;
+#include "includes.h"
 
 // Class: VirusDB
 // Desc: Contains a database of Virus definitions
@@ -13,17 +9,25 @@ using namespace std;
 class VirusDB
 {
 public:
-	VirusDB();
+	static VirusDB* getInstance();
 	~VirusDB();
 
+	void getSignatures( vector< string >& pSigs );
+	void getMinMaxOffsets( UINT& iMin, UINT& iMax );
+
 private:
+	// Singleton Implementation
+	static VirusDB* m_pInstance;
+	VirusDB();
+	VirusDB& operator= ( const VirusDB& pCopy ) { return *this; }
+	VirusDB( const VirusDB& pCopy ) {}
 
 	void loadDB();
 
 	struct VirusEntryStruct
 	{
 		string m_sSignature;
-		unsigned int m_iOffset;
+		UINT m_iOffset;
 	};
 
 	unordered_map< string, VirusEntryStruct > m_Entries;
