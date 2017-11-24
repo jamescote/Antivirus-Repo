@@ -129,12 +129,18 @@ void VirusDB::loadDB()
 }
 
 // Gets a vector of signature strings.
-void VirusDB::getSignatures( vector< string >& pSigs )
+void VirusDB::getSignatures( vector< string >& pSigs, vector< string > const *pKeys )
 {
-	for ( unordered_map<string, VirusEntryStruct>::iterator iter = m_Entries.begin();
-		 iter != m_Entries.end();
-		 ++iter )
-		pSigs.push_back( iter->second.m_sSignature );
+	if ( pKeys )	// Keys Specified? get the specific signatures
+		for ( vector< string >::const_iterator iter = pKeys->begin();
+			 iter != pKeys->end();
+			 ++iter )
+			pSigs.push_back( m_Entries[ (*iter) ].m_sSignature );
+	else			// Get all the signatures
+		for ( unordered_map<string, VirusEntryStruct>::iterator iter = m_Entries.begin();
+			 iter != m_Entries.end();
+			 ++iter )
+			pSigs.push_back( iter->second.m_sSignature );
 }
 
 // Returns the range of the Offsets in the Virus Database
@@ -151,7 +157,7 @@ void VirusDB::getMinMaxOffsets( UINT& iMin, UINT& iMax )
 	{
 		if ( iter->second.m_iOffset < iMin )
 			iMin = iter->second.m_iOffset;
-		if ( (numeric_limits<UINT>::max() != iter->second.m_iOffset) && (iter->second.m_iOffset > iMax) )	// Ignore offsets set to MAX INT.
-			iMax = iter->second.m_iOffset;
+		if ( (numeric_limits<UINT>::max() != iter->second.m_iOffset) && ((iter->second.m_iOffset + iter->second.m_sSignature.length()) > iMax) )	// Ignore offsets set to MAX INT.
+			iMax = iter->second.m_iOffset + iter->second.m_sSignature.length();
 	}
 }

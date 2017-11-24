@@ -19,7 +19,7 @@ public:
 	static VirusDB* getInstance();
 	~VirusDB();
 
-	void getSignatures( vector< string >& pSigs );
+	void getSignatures( vector< string >& pSigs, vector< string > const *pKeys = NULL );
 	const unordered_map< string, VirusEntryStruct >* getDBPtr() { return &m_Entries; }
 	void getMinMaxOffsets( UINT& iMin, UINT& iMax );
 

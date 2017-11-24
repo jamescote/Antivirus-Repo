@@ -2,12 +2,29 @@
 #include "VirusDB.h"
 #include "WuManber.h"
 
-int main()
+int main(int iArgc, char* sArgs[])
 {
 	VirusDB *pVDB = VirusDB::getInstance();
 	WuManber *pWM = new WuManber();
+	vector< string > pMatches;
 
 	pWM->initialize( );
+
+	if ( iArgc > 1 )
+	{
+		pWM->scanFile( sArgs[ 1 ], pMatches );
+
+		if ( pMatches.empty() )
+			cout << "\"" << sArgs[ 1 ] << "\" is not infected.\n";
+		else
+		{
+			cout << "\"" << sArgs[ 1 ] << "\" is potentially infected by: \n";
+			for ( vector< string >::iterator iter = pMatches.begin();
+				 iter != pMatches.end();
+				 ++iter )
+				cout << "\t" << (*iter) << endl;
+		}
+	}
 
 	delete pVDB;
 	delete pWM;
