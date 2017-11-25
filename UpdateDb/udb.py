@@ -1,3 +1,4 @@
+#!/usr/bin/python2.7
 """ imports for dictionary updater """
 import sys
 import argparse
@@ -14,13 +15,17 @@ def gen_arg_parser():
     """ """
     parser = argparse.ArgumentParser(description='dictionary updater')
     parser.add_argument('action', help="u=update row, d=delete row, i=insert row, D=delete whole virus",
-                    type=str, nargs=1, choices=['u','d','i','D'])
+                        type=str, nargs=1, choices=['u','d','i','D'])
+    
     parser.add_argument('database', help="file where virus data is located",
-                    type=str, nargs=1)
+                        type=str, nargs=1)
+    
     parser.add_argument('virus_name', help="the name of the virus entry to modify (assumed to be unique)",
-                    type=str, nargs=1 )
+                        type=str, nargs=1 )
+    
     parser.add_argument('fields', help="a list of fields to update/delete/insert. Format is c=Value. For option d simply use c= with no value specified",
-                    type=row_format, nargs='?', action="append")
+                        type=row_format, nargs='?', action="append")
+    
     args = parser.parse_args()
 
     if args.action[0] != 'D':
