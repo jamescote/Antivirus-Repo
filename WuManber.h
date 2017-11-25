@@ -17,7 +17,7 @@ private:
 	void match( ifstream* const pFP, vector< string > const * pVirusNames, vector< string >& pRetMatches );
 
 	unordered_map< string, UINT >		m_pShiftTbl;
-	unordered_map< string, vector< string >>	m_pHashTbl;
+	unordered_map< string, vector< string >>	m_pHashTb;l
 	UINT m_iMinLen;
 	VirusDB* m_pVDB;
 };
