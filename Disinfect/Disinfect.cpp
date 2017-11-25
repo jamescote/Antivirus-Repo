@@ -19,7 +19,7 @@ void Disinfector::initialize()
 
 /*
     detect the type of the virus - will need to consult the detector
-*/
+*/                                                                                                                                                                                             
 Virus* Disinfector::detectVirus( std::string sFileName )
 {
     cout << "In detect virus!" << endl;
@@ -39,6 +39,6 @@ void Disinfector::disinfect( Virus* virus )
 }
 
 /* 
-    Handle cleanup
+   Handle cleanup
 */
 Disinfector::~Disinfector(){}

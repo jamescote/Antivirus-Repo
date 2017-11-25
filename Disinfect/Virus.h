@@ -39,7 +39,7 @@ class Virus
 
         std::string toString();
 
-    private:
+    privaote:
         std::string m_Signature;
         //address of entry point if known (applies to file infector)
         ULONG m_EntryPoint;

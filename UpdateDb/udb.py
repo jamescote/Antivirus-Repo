@@ -14,7 +14,7 @@ def row_format(s, pat=re.compile(r'[a-zA-Z]=[a-zA-Z0-9]*')):
 
 
 def gen_arg_parser():
-    """ """
+    """ generates the argument parser """
     parser = argparse.ArgumentParser(description='dictionary updater')
     parser.add_argument('action', help="u=update row, d=delete row, i=insert row, D=delete whole virus",
                         type=str, nargs=1, choices=['u','d','i','D'])
@@ -42,7 +42,11 @@ def gen_arg_parser():
     return args
 
 def get_virus_index(lines, virus_name):
+    """ returns the line at which a virus entry is found  """
     index = 0
+
+    if not lines:
+        return -1
     
     for line in lines:
         if line.startswith("v {}".format(virus_name)):
@@ -62,7 +66,7 @@ def delete_virus(database, virus_name):
             contents = db_file.readlines()
             virus_index = get_virus_index(contents, virus_name)
                 
-            if virus_index != 0 and virus_index < len(contents):
+            if virus_index != -1 and virus_index < len(contents):
                 next_index = virus_index + 1
                 while next_index < len(contents) and not contents[next_index].startswith("v "):
                     next_index+=1
@@ -117,7 +121,7 @@ def delete_virus_fields(database, virus_name, fields):
             contents = db_file.readlines()
             index = get_virus_index(contents, virus_name)
 
-            if index != 0 and index < len(contents):
+            if index != -1 and index < len(contents):
                 existing_fields = get_fields(index+1, contents)
             
                 for field in fields:
@@ -146,7 +150,7 @@ def insert_virus_fields(database, virus_name, fields):
             #index of virus
             index = get_virus_index(contents, virus_name)
 
-            if index != 0 and index < len(contents):
+            if index != -1 and index < len(contents):
                 existing_fields = get_fields(index+1, contents)
             
                 for field in fields:
