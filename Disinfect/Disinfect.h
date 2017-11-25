@@ -2,9 +2,13 @@
 #ifndef DISINFECTOR_H
 #define DISINFECTOR_H
 
+//will eventually need to open files
+#include <fstream>
 #include <string>
 #include <iostream>
-#include <fstream>
+
+using namespace std;
+
 #include "Virus.h"
 #include "types.h"
 
@@ -18,14 +22,14 @@ class Disinfector
         void initialize();
 
         //should call WuManber
-        Virus* detectType( std::string sFileName );
+        Virus* detectVirus( std::string sFileName );
 
         void disinfect( Virus* virus );
 
     private:
         // Possible method stubs
         // Nothing here yet...
-        
+
 
 };
 

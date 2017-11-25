@@ -2,7 +2,10 @@
 #define VIRUS_H
 
 #include <string>
+#include <stdio.h>
 #include "types.h"
+
+using namespace std;
 
 typedef enum {
     COMPANION,
@@ -10,11 +13,15 @@ typedef enum {
     FILE_INFECTOR
 } VirusType;
 
+const string VirusTypeNames[] = 
+    { "Companion", "Prepender", "File Infector" };
+
 class Virus
 {
     public:
         Virus();
-        Virus(std::string name, VirusType type, ULONG entryPoint, UINT size);
+        Virus(std::string name, VirusType type, ULONG entryPoint, UINT size
+                ,string signature);
         ~Virus();
 
         //getters and setters;
@@ -27,8 +34,10 @@ class Virus
         UINT getSize();
         void setSize(UINT size);
 
-        ULONG entryPoint();
-        void setSizE(UINT entryPoint);
+        ULONG getEntryPoint();
+        void setEntryPoint(UINT entryPoint);
+
+        std::string toString();
 
     private:
         std::string m_Signature;
