@@ -2,13 +2,21 @@
 #include "VirusDB.h"
 #include "WuManber.h"
 
+const UBYTE sELF[] = { "\x7f\x45\x4c\x46" };
+
+// Defines
+#define NUM_ELF_BYTES 4
+
 int main(int iArgc, char* sArgs[])
 {
+	// Local Variables
 	VirusDB *pVDB = VirusDB::getInstance();
 	WuManber *pWM = new WuManber();
 	vector< string > pMatches;
 
+
 	pWM->initialize( );
+
 
 	if ( iArgc > 1 )
 	{

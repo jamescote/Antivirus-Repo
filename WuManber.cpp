@@ -1,5 +1,14 @@
 #include "WuManber.h"
 
+// Constants
+const string sDirectories[] = { "/usr/bin", "/bin", "/sbin" };
+const UBYTE sELF[] = { "\x7f\x45\x4c\x46" };
+
+// Defines
+#define NUM_ELF_BYTES 4
+#define DEFAULT_NUM_LOAD_CHARS 13
+#define NUM_ELIPSIS 4
+
 WuManber::WuManber()
 {
 	m_pVDB = VirusDB::getInstance();
@@ -164,4 +173,128 @@ void WuManber::match( ifstream* const pFP, vector< string > const * pVirusNames,
 		if ( v_sComparingSigs.empty() )
 			break;
 	}
+}
+
+void WuManber::fullScan( unordered_map< string/*File Name*/, vector< string > /*Resulting Viruses*/>& pResults )
+{
+	for ( string sDir : sDirectories )
+	{
+		scanDirectory( sDir, pResults );
+	}
+}
+
+/* Algorithm pulled from https://stackoverflow.com/questions/306533/how-do-i-get-a-list-of-files-in-a-directory-in-c */
+void WuManber::scanDirectory( const string& sDirectory, unordered_map< string/*File Name*/, vector< string > /*Resulting Viruses*/>& pResults )
+{
+	// Local Variables
+	int iNumDots( 0 ), iMaxChars( 0 );
+	class dirent *pEntry = NULL;
+	class stat st;
+	DIR *pDirectory = opendir( sDirectory.c_str() );
+	vector< string > sPotentialHits;
+
+	if ( NULL == pDirectory )
+		fprintf( stderr, "Error: could not open directory: \"%s\" -> \"%s\"\n", sDirectory.c_str(), strerror( errno ) );
+	else
+	{
+		while ( NULL != (pEntry = readdir( pDirectory )) )
+		{
+			const string sFileName = pEntry->d_name;
+			const string sFullFileName = sDirectory + "/" + sFileName;
+
+			if ( '.' == sFileName[ 0 ] )
+				continue;
+
+			// get info about file.
+			if ( -1 == stat( sFullFileName.c_str(), &st ) )
+			{
+				fprintf( stderr, "Error: couldn't retrieve information about file \"%s\" -> \"%s\"\n", sFullFileName.c_str(), strerror( errno ) );
+				continue;
+			}
+
+			if ( S_ISDIR( st.st_mode ) ) // Directory: Recurse
+				scanDirectory( sFullFileName, pResults );
+			else if ( S_ISREG( st.st_mode ) && isElf( sFullFileName ) )
+			{
+				// Output Scanning info
+				iMaxChars = outputLoadBar( iNumDots, sFullFileName, iMaxChars );
+				if ( NUM_ELIPSIS == (++iNumDots) )
+					iNumDots = 0;
+
+				// Scan the file.
+				scanFile( sFullFileName, sPotentialHits );
+
+				// Were there hits.
+				if ( !sPotentialHits.empty() )
+				{
+					// Relay result.
+					cout << "\"" << sFullFileName << "\" is potentially infected by: ";
+					for ( vector< string >::iterator sIter = sPotentialHits.begin();
+						 sIter != sPotentialHits.end();
+						 ++sIter )
+						cout << *sIter << ((sIter + 1) == sPotentialHits.end() ? ".\n" : ", ");
+
+					// Insert into Results
+					pResults.insert( make_pair( sFullFileName, sPotentialHits ) );
+				}
+			}
+		} // end While
+
+		// Clear Scanning Loadbar.
+		for ( int i = 0; i < iMaxChars; ++i )
+			cout << " ";
+		cout << "\r";
+
+		closedir( pDirectory );
+	}
+}
+
+// Output Scanning Information.
+int WuManber::outputLoadBar( int iNumDots, const string& sFileName, int iMaxChars )
+{
+	// Local Variables
+	int iNewMaxChars = sFileName.length() + DEFAULT_NUM_LOAD_CHARS;
+
+	// Output File being scanned.
+	cout << "Scanning " << sFileName;
+
+	// Output animating ellipsis
+	for ( UBYTE i = 0; i < NUM_ELIPSIS; ++i )
+		cout << (i < (iNumDots & (NUM_ELIPSIS - 1)) ? "." : " ");
+
+	// Clear last characters that were printed.
+	for ( UBYTE i = iMaxChars; i < iNewMaxChars; ++i )
+		cout << " ";
+
+	// Carriage return to overwrite line.
+	cout << "\r";
+
+	// Return new max for next call.
+	return iNewMaxChars;
+}
+
+// checks a file to tell if it's an ELF file or not
+bool WuManber::isElf( const string& sFileName )
+{
+	// Local Variables
+	ifstream pFile( sFileName );
+	UBYTE const * pPtr = sELF;
+	bool bReturnValue = false;
+
+	// Check if Open
+	if ( pFile.is_open() )
+	{
+		// Set to true for short-circuit evaluation
+		bReturnValue = true;
+		
+		// Check first 4 bytes.
+		for ( UBYTE i = 0; i < NUM_ELF_BYTES; ++i )
+			bReturnValue = bReturnValue && (*(pPtr++) == (UBYTE) pFile.get());
+
+		// Close file.
+		pFile.close();
+	}
+
+	// Return result.
+	return bReturnValue;
 }

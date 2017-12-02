@@ -6,7 +6,7 @@
 #define DEBUG
 //*/
 
-#include <string>
+#include <string.h>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -14,6 +14,9 @@
 #include <vector>
 #include <unordered_map>
 #include <limits>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 
 // Typedefs
 typedef unsigned char UBYTE;
